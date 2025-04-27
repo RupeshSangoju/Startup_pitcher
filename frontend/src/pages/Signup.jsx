@@ -1,9 +1,12 @@
+// frontend/src/pages/Signup.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 
-function Signup() {
+function Signup({ setIsAuthenticated }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -13,26 +16,27 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password || !confirmPassword) {
-      setError('All fields are required.');
+      setError(t('All fields are required.'));
       return;
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError(t('Password must be at least 6 characters long.'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('Passwords do not match.'));
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/signup`,
+        { email, password }
+      );
       localStorage.setItem('token', response.data.token);
-      navigate('/');
+      setIsAuthenticated(true);
+      navigate('/dashboard');
     } catch (error) {
-      setError(error.response?.data?.error || 'Signup failed.');
+      setError(t(error.response?.data?.error || 'Signup failed.'));
     }
   };
 
@@ -44,7 +48,7 @@ function Signup() {
       transition={{ duration: 0.5 }}
     >
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Sign Up</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{t('Signup')}</h2>
         {error && (
           <motion.p
             className="text-red-500 mb-4"
@@ -58,21 +62,21 @@ function Signup() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-              Email
+              {t('Email')}
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              placeholder="you@example.com"
+              placeholder={t('e.g., user@example.com')}
               required
               aria-required="true"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-              Password
+              {t('Password')}
             </label>
             <input
               type="password"
@@ -85,7 +89,7 @@ function Signup() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-              Re-enter Password
+              {t('Re-enter Password')}
             </label>
             <input
               type="password"
@@ -99,15 +103,15 @@ function Signup() {
           <button
             type="submit"
             className="w-full bg-primary text-white p-3 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
-            aria-label="Sign Up"
+            aria-label={t('Signup')}
           >
-            Sign Up
+            {t('Signup')}
           </button>
         </form>
         <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
-          Already have an account?{' '}
+          {t('Already have an account?')}{' '}
           <Link to="/login" className="text-primary hover:underline">
-            Login
+            {t('Login')}
           </Link>
         </p>
       </div>
