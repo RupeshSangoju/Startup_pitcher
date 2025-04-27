@@ -12,9 +12,15 @@ import 'shepherd.js/dist/css/shepherd.css';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Apply dark mode to <html>
+  // Initialize authentication state
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  // Apply dark mode
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -22,12 +28,6 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
-
-  // Update authentication state
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-  }, []);
 
   // Protected Route Component
   const ProtectedRoute = ({ children }) => {
@@ -97,7 +97,13 @@ function App() {
     <ErrorBoundary>
       <Router>
         <Tour>
-          <Navbar darkMode={darkMode} setDarkMode={setDarkMode} setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} className="navbar" />
+          <Navbar
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            setIsAuthenticated={setIsAuthenticated}
+            isAuthenticated={isAuthenticated}
+            className="navbar"
+          />
           <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
             <Routes>
               <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
@@ -110,7 +116,10 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/" element={<Navigate to="/login" />} />
+              <Route
+                path="/"
+                element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />}
+              />
               <Route path="/home" element={<Home />} />
             </Routes>
           </main>

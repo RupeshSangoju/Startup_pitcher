@@ -34,7 +34,7 @@ function Signup({ setIsAuthenticated }) {
       );
       localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
-      navigate('/dashboard');
+      navigate('/login');
     } catch (error) {
       setError(t(error.response?.data?.error || 'Signup failed.'));
     }

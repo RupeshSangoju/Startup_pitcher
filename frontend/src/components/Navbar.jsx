@@ -49,7 +49,7 @@ function Navbar({ darkMode, setDarkMode, setIsAuthenticated, isAuthenticated }) 
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link
-          to={isLoggedIn ? '/dashboard' : '/login'}
+          to={isAuthenticated ? '/dashboard' : '/login'}
           className="text-2xl font-bold text-primary dark:text-white"
           aria-label={t('Pitch Generator Home')}
         >
@@ -222,4 +222,4 @@ function Navbar({ darkMode, setDarkMode, setIsAuthenticated, isAuthenticated }) 
   );
 }
 
-export default Navbar;
+export default Navbar;  
